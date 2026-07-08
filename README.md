@@ -1,96 +1,115 @@
 # com.soropeza.sqlquery — SQL Query Enhanced Form
 
-Plugin OSGi para **iDempiere 10** que reemplaza la forma estándar *SQL Query* por una
-versión mejorada (`WSQLQueryEnhanced`), pensada para el consultor técnico que trabaja
-con queries complejos: editor redimensionable, atajos de teclado, historial de
-sentencias, copiado de resultados y exportación a CSV.
+*Leer en [español](README.es.md).*
+
+OSGi plugin for **iDempiere 10** that replaces the standard *SQL Query* form with an
+enhanced version (`WSQLQueryEnhanced`) aimed at technical consultants working with
+complex queries: resizable editor, keyboard shortcuts, statement history, clipboard
+copy and CSV export — without touching the core or the Application Dictionary.
 
 - **Bundle:** `com.soropeza.sqlquery`
-- **Versión:** `10.0.0.qualifier`
-- **Autor:** Sergio Oropeza
+- **Version:** `10.0.0.qualifier`
+- **Author:** Sergio Oropeza
+- **License:** [GPL v2](LICENSE.md)
 
-## Funcionalidades
+<!-- TODO: add a screenshot or GIF of the form here, e.g.
+![SQL Query Enhanced](docs/screenshot.png)
+-->
 
-| Función | Detalle |
+## Features
+
+| Feature | Detail |
 |---|---|
-| Editor SQL redimensionable | Región norte con splitter (arrastra el borde para agrandar/colapsar), fuente monoespaciada, sin corrector ortográfico |
-| Ejecutar con Ctrl+Enter | Además del botón de la toolbar; muestra indicador de "Procesando" mientras corre el query |
-| Historial de sentencias | Combo en la toolbar con las últimas 50 queries exitosas de la sesión (tooltip muestra el SQL completo); al seleccionar una se carga en el editor |
-| Copiar resultados | Botón que copia todo el resultado al portapapeles como valores separados por tabulador (pegable directo en Excel/Calc) |
-| Copiar una fila | Doble clic sobre una fila del resultado la copia al portapapeles |
-| Exportar a CSV | Descarga el resultado como archivo `SQLQuery_yyyyMMdd_HHmmss.csv` en UTF-8 con BOM (Excel lo abre con acentos correctos) |
-| Barra de estado | Región sur con cantidad de registros y duración en segundos; los errores se muestran en rojo |
-| Limpiar editor | Botón de la toolbar que vacía el editor y le devuelve el foco |
+| Resizable SQL editor | North region with splitter (drag the border to enlarge/collapse), monospace font, spellcheck disabled |
+| Run with Ctrl+Enter | In addition to the toolbar button; shows a busy indicator while the query runs |
+| Statement history | Toolbar combo with the last 50 successful queries of the session (tooltip shows the full SQL); selecting one loads it into the editor |
+| Copy results | Toolbar button that copies the whole result set to the clipboard as tab-separated values (paste directly into Excel/Calc) |
+| Copy one row | Double-click a result row to copy it to the clipboard |
+| Export to CSV | Downloads the result as `SQLQuery_yyyyMMdd_HHmmss.csv`, UTF-8 with BOM (Excel opens accents correctly) |
+| Status bar | South region with record count and duration in seconds; errors are shown in red |
+| Clear editor | Toolbar button that empties the editor and returns focus to it |
 
-## Cómo funciona
+## How it works
 
-El plugin **no modifica el core ni el Application Dictionary**. Registra
-`SOP_FormFactory` como servicio OSGi `IFormFactory` con `service.ranking = 100`
-(mayor que las factories del core), de modo que cuando el usuario abre la forma
-estándar *SQL Query* (classname `org.adempiere.webui.apps.form.WSQLQuery`), la
-factory devuelve en su lugar una instancia de
-`com.soropeza.webui.apps.form.WSQLQueryEnhanced`.
+The plugin **does not modify the core or the Application Dictionary**. It registers
+`SOP_FormFactory` as an OSGi `IFormFactory` service with `service.ranking = 100`
+(higher than the core factories), so when a user opens the standard *SQL Query*
+form (classname `org.adempiere.webui.apps.form.WSQLQuery`), the factory returns an
+instance of `com.soropeza.webui.apps.form.WSQLQueryEnhanced` instead.
 
-Para volver al comportamiento estándar basta con detener o desinstalar el bundle.
+To go back to the standard behavior, just stop or uninstall the bundle.
 
-## Seguridad
+## Security
 
-Se conserva intacta la lógica de seguridad de la forma original, controlada por
+The security logic of the original form is preserved untouched, governed by
 SysConfig:
 
-| SysConfig | Default | Descripción |
+| SysConfig | Default | Description |
 |---|---|---|
-| `FORM_SQL_QUERY_ALLOWED_KEYWORDS` | `SELECT,WITH,SHOW` | Palabras clave con las que puede iniciar la sentencia |
-| `FORM_SQL_QUERY_MAX_RECORDS` | `500` | Máximo de registros retornados |
-| `FORM_SQL_QUERY_TIMEOUT_IN_SECONDS` | `120` | Timeout del query |
-| `FORM_SQL_QUERY_LOG_ISSUE` | `Y` | Registra cada ejecución en `AD_Issue` (SQL, resultado y duración) |
+| `FORM_SQL_QUERY_ALLOWED_KEYWORDS` | `SELECT,WITH,SHOW` | Keywords the statement may start with |
+| `FORM_SQL_QUERY_MAX_RECORDS` | `500` | Maximum records returned |
+| `FORM_SQL_QUERY_TIMEOUT_IN_SECONDS` | `120` | Query timeout |
+| `FORM_SQL_QUERY_LOG_ISSUE` | `Y` | Logs every execution to `AD_Issue` (SQL, result and duration) |
 
-Además: una sola sentencia por ejecución (sin `;`) y la conexión se abre en modo
-solo lectura.
+Additionally: a single statement per execution (no `;`) and the connection is
+opened read-only.
 
-## Estructura
+> **Maintenance note:** this plugin carries a copy of the core form logic,
+> including the security checks above. If a future iDempiere release patches
+> `WSQLQuery` (e.g. a security fix), this plugin does **not** inherit it — it must
+> be updated accordingly. Review core changes to
+> `org.adempiere.ui.zk/.../WSQLQuery.java` when upgrading.
+
+## Project layout
 
 ```
 com.soropeza.sqlquery/
-├── META-INF/MANIFEST.MF                                  # Manifiesto OSGi (Require-Bundle: base, ui.zk, zk, zul, zcommon)
-├── OSGI-INF/formfactory.xml                              # Componente DS que publica la IFormFactory
+├── META-INF/MANIFEST.MF                                  # OSGi manifest (Require-Bundle: base, ui.zk, zk, zul, zcommon)
+├── OSGI-INF/formfactory.xml                              # DS component publishing the IFormFactory
 ├── build.properties
-├── pom.xml                                               # Empaquetado tycho (padre org.idempiere.parent)
+├── pom.xml                                               # Tycho packaging (parent org.idempiere.parent)
 └── src/
     └── com/soropeza/webui/
-        ├── apps/form/WSQLQueryEnhanced.java              # La forma mejorada
-        └── factory/SOP_FormFactory.java                  # Intercepta el classname de la forma estándar
+        ├── apps/form/WSQLQueryEnhanced.java              # The enhanced form
+        └── factory/SOP_FormFactory.java                  # Intercepts the standard form classname
 ```
 
-## Instalación
+## Installation
 
-### Entorno de desarrollo (Eclipse)
+### Development environment (Eclipse)
 
-1. `File > Import > Existing Projects into Workspace` y seleccionar este directorio.
-2. Agregar el plugin a la Run Configuration del servidor (pestaña *Plug-ins*).
-3. Iniciar el servidor; verificar en la consola OSGi con `ss soropeza` que el bundle
-   esté `ACTIVE` (o `LAZY`).
+1. `File > Import > Existing Projects into Workspace` and select this directory.
+2. Add the plugin to the server Run Configuration (*Plug-ins* tab).
+3. Start the server; check in the OSGi console with `ss soropeza` that the bundle
+   is `ACTIVE` (or `LAZY`).
 
-### Servidor (producción)
+### Server (production)
 
-1. Exportar el jar: en Eclipse `Export > Deployable plug-ins and fragments`
-   (o `mvn verify` si el plugin está integrado al build tycho).
-2. Copiar `com.soropeza.sqlquery_10.0.0.*.jar` al servidor e instalarlo vía la
-   consola OSGi (telnet al puerto 12612):
+1. Export the jar: in Eclipse `Export > Deployable plug-ins and fragments`
+   (or `mvn verify` if the plugin is integrated into a Tycho build).
+2. Copy `com.soropeza.sqlquery_10.0.0.*.jar` to the server and install it through
+   the OSGi console (telnet to port 12612):
 
    ```
-   install file:/ruta/com.soropeza.sqlquery_10.0.0.jar
+   install file:/path/com.soropeza.sqlquery_10.0.0.jar
    start <bundle-id>
    ```
 
-   o copiarlo a la carpeta `plugins/` con su entrada correspondiente y reiniciar.
-3. Abrir la forma **SQL Query** desde el menú: debe mostrarse la versión mejorada
-   (toolbar con botones e historial).
+   or drop it into the `plugins/` folder with its corresponding entry and restart.
+3. Open the **SQL Query** form from the menu: the enhanced version should appear
+   (toolbar with buttons and history).
 
-## Notas
+## Notes
 
-- El historial de queries vive en memoria de la instancia de la forma: se pierde al
-  cerrar la pestaña de la forma o la sesión.
-- El copiado al portapapeles usa `navigator.clipboard`, que requiere que iDempiere
-  se sirva por HTTPS o desde `localhost` (restricción de los navegadores).
-- Probado en iDempiere 10 (release-10).
+- The query history lives in the form instance memory: it is lost when the form
+  tab or the session is closed.
+- Clipboard copy uses `navigator.clipboard`, which browsers only allow over HTTPS
+  or from `localhost`.
+- Tested on iDempiere 10 (release-10).
+
+## License
+
+[GNU General Public License v2](LICENSE.md) — same license as iDempiere.
+`WSQLQueryEnhanced` is derived from the original `WSQLQuery` form by Carlos Ruiz
+(globalqss - bxservice); the original attribution is preserved in the source
+header.

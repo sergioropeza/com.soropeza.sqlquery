@@ -1,0 +1,13 @@
+# Build output
+bin/
+target/
+
+# Eclipse metadata that should stay local
+.settings/
+*.launch
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+*.swp
+*~
