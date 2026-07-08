@@ -12,9 +12,9 @@ copy and CSV export — without touching the core or the Application Dictionary.
 - **Author:** Sergio Oropeza
 - **License:** [GPL v2](LICENSE.md)
 
-<!-- TODO: add a screenshot or GIF of the form here, e.g.
+
 ![SQL Query Enhanced](docs/screenshot.png)
--->
+
 
 ## Features
 

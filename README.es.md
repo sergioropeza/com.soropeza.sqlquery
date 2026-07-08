@@ -12,6 +12,8 @@ sentencias, copiado de resultados y exportación a CSV.
 - **Autor:** Sergio Oropeza
 - **Licencia:** [GPL v2](LICENSE.md)
 
+![SQL Query Enhanced](docs/screenshot.png)
+
 ## Funcionalidades
 
 | Función | Detalle |
