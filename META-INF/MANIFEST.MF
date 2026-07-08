@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: SQL Query Enhanced Form
+Bundle-SymbolicName: com.soropeza.sqlquery
+Bundle-Version: 10.0.0.qualifier
+Bundle-Vendor: Sergio Oropeza
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
+ org.adempiere.ui.zk;bundle-version="0.0.0",
+ zk;bundle-version="0.0.0",
+ zul;bundle-version="0.0.0",
+ zcommon;bundle-version="0.0.0"
+Import-Package: org.compiere.minigrid,
+ org.osgi.framework,
+ org.osgi.framework.wiring,
+ org.osgi.service.component
+Service-Component: OSGI-INF/formfactory.xml
+Bundle-ActivationPolicy: lazy
+Automatic-Module-Name: com.soropeza.sqlquery
