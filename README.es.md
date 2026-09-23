@@ -2,13 +2,13 @@
 
 *Read in [English](README.md).*
 
-Plugin OSGi para **iDempiere 10** que reemplaza la forma estándar *SQL Query* por una
+Plugin OSGi para **iDempiere 13** que reemplaza la forma estándar *SQL Query* por una
 versión mejorada (`WSQLQueryEnhanced`), pensada para el consultor técnico que trabaja
 con queries complejos: editor redimensionable, atajos de teclado, historial de
 sentencias, copiado de resultados y exportación a CSV.
 
 - **Bundle:** `com.soropeza.sqlquery`
-- **Versión:** `10.0.0.qualifier`
+- **Versión:** `13.0.0.qualifier`
 - **Autor:** Sergio Oropeza
 - **Licencia:** [GPL v2](LICENSE.md)
 
@@ -86,11 +86,11 @@ com.soropeza.sqlquery/
 
 1. Exportar el jar: en Eclipse `Export > Deployable plug-ins and fragments`
    (o `mvn verify` si el plugin está integrado al build tycho).
-2. Copiar `com.soropeza.sqlquery_10.0.0.*.jar` al servidor e instalarlo vía la
+2. Copiar `com.soropeza.sqlquery_13.0.0.*.jar` al servidor e instalarlo vía la
    consola OSGi (telnet al puerto 12612):
 
    ```
-   install file:/ruta/com.soropeza.sqlquery_10.0.0.jar
+   install file:/ruta/com.soropeza.sqlquery_13.0.0.jar
    start <bundle-id>
    ```
 
@@ -104,7 +104,7 @@ com.soropeza.sqlquery/
   cerrar la pestaña de la forma o la sesión.
 - El copiado al portapapeles usa `navigator.clipboard`, que requiere que iDempiere
   se sirva por HTTPS o desde `localhost` (restricción de los navegadores).
-- Probado en iDempiere 10 (release-10).
+- Probado en iDempiere 13 (release-13).
 
 ## Licencia
 

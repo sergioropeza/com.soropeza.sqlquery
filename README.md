@@ -2,13 +2,13 @@
 
 *Leer en [español](README.es.md).*
 
-OSGi plugin for **iDempiere 10** that replaces the standard *SQL Query* form with an
+OSGi plugin for **iDempiere 13** that replaces the standard *SQL Query* form with an
 enhanced version (`WSQLQueryEnhanced`) aimed at technical consultants working with
 complex queries: resizable editor, keyboard shortcuts, statement history, clipboard
 copy and CSV export — without touching the core or the Application Dictionary.
 
 - **Bundle:** `com.soropeza.sqlquery`
-- **Version:** `10.0.0.qualifier`
+- **Version:** `13.0.0.qualifier`
 - **Author:** Sergio Oropeza
 - **License:** [GPL v2](LICENSE.md)
 
@@ -87,11 +87,11 @@ com.soropeza.sqlquery/
 
 1. Export the jar: in Eclipse `Export > Deployable plug-ins and fragments`
    (or `mvn verify` if the plugin is integrated into a Tycho build).
-2. Copy `com.soropeza.sqlquery_10.0.0.*.jar` to the server and install it through
+2. Copy `com.soropeza.sqlquery_13.0.0.*.jar` to the server and install it through
    the OSGi console (telnet to port 12612):
 
    ```
-   install file:/path/com.soropeza.sqlquery_10.0.0.jar
+   install file:/path/com.soropeza.sqlquery_13.0.0.jar
    start <bundle-id>
    ```
 
@@ -105,7 +105,7 @@ com.soropeza.sqlquery/
   tab or the session is closed.
 - Clipboard copy uses `navigator.clipboard`, which browsers only allow over HTTPS
   or from `localhost`.
-- Tested on iDempiere 10 (release-10).
+- Tested on iDempiere 13 (release-13).
 
 ## License
 

@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: SQL Query Enhanced Form
 Bundle-SymbolicName: com.soropeza.sqlquery
-Bundle-Version: 10.0.0.qualifier
+Bundle-Version: 13.0.0.qualifier
 Bundle-Vendor: Sergio Oropeza
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
  org.adempiere.ui.zk;bundle-version="0.0.0",
  zk;bundle-version="0.0.0",
