@@ -20,13 +20,17 @@ copy and CSV export — without touching the core or the Application Dictionary.
 
 | Feature | Detail |
 |---|---|
-| Resizable SQL editor | North region with splitter (drag the border to enlarge/collapse), monospace font, spellcheck disabled |
-| Run with Ctrl+Enter | In addition to the toolbar button; shows a busy indicator while the query runs |
-| Statement history | Toolbar combo with the last 50 successful queries of the session (tooltip shows the full SQL); selecting one loads it into the editor |
+| SQL editor with highlighting | [CodeMirror](https://codemirror.net/5/) (bundled in the plugin) with SQL syntax highlighting and line numbers, in a resizable north region. It can be disabled by SysConfig, leaving a monospace textarea with the same shortcuts |
+| Run with Ctrl+Enter | In addition to the toolbar "Execute Query" button; shows a busy indicator while the query runs |
+| Run the selection | When text is selected in the editor, Ctrl+Enter or the button run only that part (the status shows "(Selection)") |
+| Tab indents | Tab inserts 4 spaces (or indents the selected lines); Shift+Tab unindents |
+| Statement history | Toolbar combo with the user's last 50 successful queries, with time and record count (tooltip shows the full SQL); selecting one loads it into the editor. Persists across sessions: read from `AD_Issue` (requires `FORM_SQL_QUERY_LOG_ISSUE=Y`) |
+| Visible NULL | Null values are shown as `NULL` in grey italics, distinct from an empty string; numeric columns without decimals (IDs) are shown as integers |
+| Shortcuts help | "?" toolbar button listing the keyboard shortcuts |
 | Copy results | Toolbar button that copies the whole result set to the clipboard as tab-separated values (paste directly into Excel/Calc) |
 | Copy one row | Double-click a result row to copy it to the clipboard |
 | Export to CSV | Downloads the result as `SQLQuery_yyyyMMdd_HHmmss.csv`, UTF-8 with BOM (Excel opens accents correctly) |
-| Status bar | South region with record count and duration in seconds; errors are shown in red |
+| Status and errors | Record count and duration are shown in the toolbar (orange when the maximum records was reached); errors are shown in full in a south region that only appears on error |
 | Clear editor | Toolbar button that empties the editor and returns focus to it |
 
 ## How it works
@@ -51,8 +55,21 @@ SysConfig:
 | `FORM_SQL_QUERY_TIMEOUT_IN_SECONDS` | `120` | Query timeout |
 | `FORM_SQL_QUERY_LOG_ISSUE` | `Y` | Logs every execution to `AD_Issue` (SQL, result and duration) |
 
-Additionally: a single statement per execution (no `;`) and the connection is
-opened read-only.
+Additionally: a single statement per execution (trailing `;` are accepted, not
+between statements) and the connection is opened read-only.
+
+Editor configuration:
+
+| SysConfig | Default | Description |
+|---|---|---|
+| `SQLQUERY_ENHANCED_CODE_EDITOR` | `Y` | `Y` uses the CodeMirror editor; `N` uses the plain textarea (same shortcuts) |
+
+CodeMirror 5.65.16 (MIT license) is **bundled in the plugin** (`src/.../form/codemirror/`) and
+the server sends it to the browser the first time an editor needs it (once per page). Nothing
+is loaded from CDNs or external sites, so it works on servers without internet access.
+
+Texts: the shortcuts help uses the `SQLQueryEnhancedHelp` message (one line per
+shortcut); when it is not defined in `AD_Message` it is shown in English.
 
 > **Maintenance note:** this plugin carries a copy of the core form logic,
 > including the security checks above. If a future iDempiere release patches
@@ -71,6 +88,8 @@ com.soropeza.sqlquery/
 └── src/
     └── com/soropeza/webui/
         ├── apps/form/WSQLQueryEnhanced.java              # The enhanced form
+        ├── apps/form/WSQLQueryEnhanced.js                # Client side editor (CodeMirror, shortcuts, selection)
+        ├── apps/form/codemirror/                         # CodeMirror 5.65.16 minified + LICENSE (MIT)
         └── factory/SOP_FormFactory.java                  # Intercepts the standard form classname
 ```
 
