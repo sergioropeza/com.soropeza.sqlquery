@@ -7,8 +7,8 @@
 	<groupId>com.soropeza</groupId>
 	<artifactId>com.soropeza.sqlquery</artifactId>
 	<!-- Must stay in sync with Bundle-Version in META-INF/MANIFEST.MF:
-	     pom "13.1.0-SNAPSHOT" <-> manifest "13.1.0.qualifier" -->
-	<version>13.1.0-SNAPSHOT</version>
+	     pom "10.1.0-SNAPSHOT" <-> manifest "10.1.0.qualifier" -->
+	<version>10.1.0-SNAPSHOT</version>
 	<packaging>eclipse-plugin</packaging>
 	<name>SQL Query Enhanced Form</name>
 	<description>iDempiere plug-in that replaces the SQL Query form with an enhanced version (code editor, history, export).</description>
@@ -22,20 +22,24 @@
 	</licenses>
 
 	<properties>
-		<tycho.version>4.0.8</tycho.version>
+		<!-- same Tycho version as the iDempiere 10 core (org.idempiere.parent) -->
+		<tycho.version>2.7.5</tycho.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>17</maven.compiler.source>
-		<maven.compiler.target>17</maven.compiler.target>
+		<maven.compiler.source>11</maven.compiler.source>
+		<maven.compiler.target>11</maven.compiler.target>
 		<!--
 		  p2 repository used to resolve the iDempiere core and ZK bundles this plug-in requires.
 
-		  Defaults to the public iDempiere 13 CI repository, so a plain "mvn verify" works on a
-		  bare clone, with no IDE and no local iDempiere checkout.
+		  iDempiere 10 has no public CI p2 repository any more, so this defaults to the p2 repository
+		  produced by a local iDempiere 10 build (release-10 branch, "mvn verify" in the core),
+		  relative to this project as in the idempiere-dev-setup layout:
+		    <workspace>/idempiere-dev-setup/idempiere   (iDempiere core)
+		    <workspace>/soropeza/com.soropeza.sqlquery  (this plug-in)
 
-		  To build against another build, or offline, override it:
+		  Point it at another build with:
 		    mvn verify -Didempiere.core.repository.url=file:///path/to/org.idempiere.p2/target/repository
 		-->
-		<idempiere.core.repository.url>https://jenkins.idempiere.org/job/iDempiere13/ws/org.idempiere.p2/target/repository/</idempiere.core.repository.url>
+		<idempiere.core.repository.url>file:///${basedir}/../../idempiere-dev-setup/idempiere/org.idempiere.p2/target/repository</idempiere.core.repository.url>
 	</properties>
 
 	<repositories>
@@ -73,8 +77,8 @@
 							<arch>x86_64</arch>
 						</environment>
 					</environments>
-					<executionEnvironment>JavaSE-17</executionEnvironment>
-					<executionEnvironmentDefault>JavaSE-17</executionEnvironmentDefault>
+					<executionEnvironment>JavaSE-11</executionEnvironment>
+					<executionEnvironmentDefault>JavaSE-11</executionEnvironmentDefault>
 					<!-- Work around the "Missing Constraint: Bundle-RequiredExecutionEnvironment"
 					     split-package resolution error; same workaround as iDempiere core. -->
 					<dependency-resolution>
@@ -95,7 +99,7 @@
 			</plugin>
 
 			<plugin>
-				<!-- Replaces ".qualifier" with a build timestamp, e.g. 13.1.0.202610071530 -->
+				<!-- Replaces ".qualifier" with a build timestamp, e.g. 10.1.0.202610071530 -->
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-packaging-plugin</artifactId>
 				<version>${tycho.version}</version>

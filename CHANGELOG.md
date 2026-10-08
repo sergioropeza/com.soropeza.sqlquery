@@ -4,6 +4,14 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 Versions follow `<iDempiere major>.<feature>.<fix>`.
 
+## [10.1.0] - 2026-10-08
+
+### Changed
+- Backport of 13.1.0 to iDempiere 10 (Java 11, ZK 9.6). No functional changes.
+- Tycho 2.7.5 (same as the iDempiere 10 core); the build resolves iDempiere 10 from the
+  p2 repository of a local core build, relative to the project (iDempiere 10 has no public
+  p2 repository).
+
 ## [13.1.0] - 2026-10-07
 
 ### Added

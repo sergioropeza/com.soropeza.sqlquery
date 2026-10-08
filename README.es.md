@@ -2,15 +2,15 @@
 
 *Read in [English](README.md).*
 
-Plugin OSGi para **iDempiere 13** que reemplaza la forma estándar *SQL Query* por una
+Plugin OSGi para **iDempiere 10** que reemplaza la forma estándar *SQL Query* por una
 versión mejorada (`WSQLQueryEnhanced`), pensada para el consultor técnico que trabaja
 con queries complejos: editor de código SQL, ejecución de la selección, historial
 persistente, copiado de resultados y exportación a CSV — sin tocar el core ni el
 Diccionario de Aplicación.
 
 - **Bundle:** `com.soropeza.sqlquery`
-- **Versión:** `13.1.0` (ver [CHANGELOG](CHANGELOG.md))
-- **Compatibilidad:** iDempiere 13 (Java 17), PostgreSQL y Oracle
+- **Versión:** `10.1.0` (ver [CHANGELOG](CHANGELOG.md))
+- **Compatibilidad:** iDempiere 10 (Java 11+), PostgreSQL y Oracle
 - **Dependencias:** ninguna además del core de iDempiere
 - **Autor:** Sergio Oropeza
 - **Licencia:** GPL-2.0-or-later ([LICENSE.md](LICENSE.md))
@@ -87,7 +87,7 @@ com.soropeza.sqlquery/
 ├── META-INF/MANIFEST.MF                                  # Manifiesto OSGi (Require-Bundle: base, ui.zk, zk, zul, zcommon)
 ├── OSGI-INF/formfactory.xml                              # Componente DS que publica la IFormFactory
 ├── build.properties
-├── pom.xml                                               # Build tycho independiente (repositorio p2 de iDempiere 13)
+├── pom.xml                                               # Build tycho independiente (repositorio p2 de iDempiere 10)
 └── src/
     └── com/soropeza/webui/
         ├── apps/form/WSQLQueryEnhanced.java              # La forma mejorada
@@ -115,7 +115,7 @@ com.soropeza.sqlquery/
    puerto 12612):
 
    ```
-   install file:/ruta/com.soropeza.sqlquery-13.1.0.jar
+   install file:/ruta/com.soropeza.sqlquery-10.1.0.jar
    start <bundle-id>
    ```
 
@@ -127,14 +127,18 @@ la base de datos, así que no hay nada que revertir.
 
 ### Compilar desde el código fuente
 
-Requiere Java 17 y Maven 3.9+. Los bundles del core se resuelven desde el repositorio
-p2 público de iDempiere 13, así que no hace falta tener el código de iDempiere:
+Requiere Java 11+ y Maven 3.6+ (Tycho 2.7.5, igual que el core de iDempiere 10).
+iDempiere 10 no tiene repositorio p2 público, así que los bundles del core se resuelven
+desde el repositorio p2 de un build local de iDempiere 10 (rama `release-10`, `mvn verify`
+en el core). Por defecto se busca relativo a este proyecto, según la estructura de
+`idempiere-dev-setup` (`<workspace>/idempiere-dev-setup/idempiere` junto a
+`<workspace>/soropeza/com.soropeza.sqlquery`):
 
 ```
 mvn verify
 ```
 
-El jar queda en `target/`. Para compilar contra otro build de iDempiere o sin conexión:
+El jar queda en `target/`. Para compilar contra otro build de iDempiere 10:
 `mvn verify -Didempiere.core.repository.url=file:///ruta/a/org.idempiere.p2/target/repository`.
 
 ## Notas
@@ -144,7 +148,7 @@ El jar queda en `target/`. Para compilar contra otro build de iDempiere o sin co
   SysConfig en `N`, el historial dura solo mientras la forma está abierta.
 - El copiado al portapapeles usa `navigator.clipboard`, que requiere que iDempiere
   se sirva por HTTPS o desde `localhost` (restricción de los navegadores).
-- Probado en iDempiere 13 (release-13).
+- Probado en iDempiere 10 (release-10). Para iDempiere 13 usar la rama `13.0`.
 
 ## Licencia
 
