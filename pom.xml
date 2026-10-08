@@ -1,13 +1,108 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.idempiere</groupId>
-		<artifactId>org.idempiere.parent</artifactId>
-		<version>${revision}</version>
-		<relativePath>../../idempiere-dev-setup/idempiere/org.idempiere.parent/pom.xml</relativePath>
-	</parent>
+
 	<groupId>com.soropeza</groupId>
 	<artifactId>com.soropeza.sqlquery</artifactId>
+	<!-- Must stay in sync with Bundle-Version in META-INF/MANIFEST.MF:
+	     pom "13.1.0-SNAPSHOT" <-> manifest "13.1.0.qualifier" -->
+	<version>13.1.0-SNAPSHOT</version>
 	<packaging>eclipse-plugin</packaging>
+	<name>SQL Query Enhanced Form</name>
+	<description>iDempiere plug-in that replaces the SQL Query form with an enhanced version (code editor, history, export).</description>
+	<url>https://github.com/sergioropeza/com.soropeza.sqlquery</url>
+
+	<licenses>
+		<license>
+			<name>GPL-2.0-or-later</name>
+			<url>https://www.gnu.org/licenses/old-licenses/gpl-2.0.html</url>
+		</license>
+	</licenses>
+
+	<properties>
+		<tycho.version>4.0.8</tycho.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>17</maven.compiler.source>
+		<maven.compiler.target>17</maven.compiler.target>
+		<!--
+		  p2 repository used to resolve the iDempiere core and ZK bundles this plug-in requires.
+
+		  Defaults to the public iDempiere 13 CI repository, so a plain "mvn verify" works on a
+		  bare clone, with no IDE and no local iDempiere checkout.
+
+		  To build against another build, or offline, override it:
+		    mvn verify -Didempiere.core.repository.url=file:///path/to/org.idempiere.p2/target/repository
+		-->
+		<idempiere.core.repository.url>https://jenkins.idempiere.org/job/iDempiere13/ws/org.idempiere.p2/target/repository/</idempiere.core.repository.url>
+	</properties>
+
+	<repositories>
+		<repository>
+			<id>idempiere-core</id>
+			<url>${idempiere.core.repository.url}</url>
+			<layout>p2</layout>
+		</repository>
+	</repositories>
+
+	<build>
+		<plugins>
+			<plugin>
+				<!-- enable the Tycho build extension -->
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-maven-plugin</artifactId>
+				<version>${tycho.version}</version>
+				<extensions>true</extensions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>target-platform-configuration</artifactId>
+				<version>${tycho.version}</version>
+				<configuration>
+					<environments>
+						<environment>
+							<os>linux</os>
+							<ws>gtk</ws>
+							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>win32</os>
+							<ws>win32</ws>
+							<arch>x86_64</arch>
+						</environment>
+					</environments>
+					<executionEnvironment>JavaSE-17</executionEnvironment>
+					<executionEnvironmentDefault>JavaSE-17</executionEnvironmentDefault>
+					<!-- Work around the "Missing Constraint: Bundle-RequiredExecutionEnvironment"
+					     split-package resolution error; same workaround as iDempiere core. -->
+					<dependency-resolution>
+						<extraRequirements>
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>org.eclipse.core.runtime</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>org.eclipse.equinox.common</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+						</extraRequirements>
+					</dependency-resolution>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<!-- Replaces ".qualifier" with a build timestamp, e.g. 13.1.0.202610071530 -->
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-packaging-plugin</artifactId>
+				<version>${tycho.version}</version>
+				<configuration>
+					<format>yyyyMMddHHmm</format>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>

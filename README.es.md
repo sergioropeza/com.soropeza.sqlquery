@@ -4,13 +4,17 @@
 
 Plugin OSGi para **iDempiere 13** que reemplaza la forma estándar *SQL Query* por una
 versión mejorada (`WSQLQueryEnhanced`), pensada para el consultor técnico que trabaja
-con queries complejos: editor redimensionable, atajos de teclado, historial de
-sentencias, copiado de resultados y exportación a CSV.
+con queries complejos: editor de código SQL, ejecución de la selección, historial
+persistente, copiado de resultados y exportación a CSV — sin tocar el core ni el
+Diccionario de Aplicación.
 
 - **Bundle:** `com.soropeza.sqlquery`
-- **Versión:** `13.0.0.qualifier`
+- **Versión:** `13.1.0` (ver [CHANGELOG](CHANGELOG.md))
+- **Compatibilidad:** iDempiere 13 (Java 17), PostgreSQL y Oracle
+- **Dependencias:** ninguna además del core de iDempiere
 - **Autor:** Sergio Oropeza
-- **Licencia:** [GPL v2](LICENSE.md)
+- **Licencia:** GPL-2.0-or-later ([LICENSE.md](LICENSE.md))
+- **Código fuente / issues:** https://github.com/sergioropeza/com.soropeza.sqlquery
 
 ![SQL Query Enhanced](docs/screenshot.png)
 
@@ -83,7 +87,7 @@ com.soropeza.sqlquery/
 ├── META-INF/MANIFEST.MF                                  # Manifiesto OSGi (Require-Bundle: base, ui.zk, zk, zul, zcommon)
 ├── OSGI-INF/formfactory.xml                              # Componente DS que publica la IFormFactory
 ├── build.properties
-├── pom.xml                                               # Empaquetado tycho (padre org.idempiere.parent)
+├── pom.xml                                               # Build tycho independiente (repositorio p2 de iDempiere 13)
 └── src/
     └── com/soropeza/webui/
         ├── apps/form/WSQLQueryEnhanced.java              # La forma mejorada
@@ -103,24 +107,41 @@ com.soropeza.sqlquery/
 
 ### Servidor (producción)
 
-1. Exportar el jar: en Eclipse `Export > Deployable plug-ins and fragments`
-   (o `mvn verify` si el plugin está integrado al build tycho).
-2. Copiar `com.soropeza.sqlquery_13.0.0.*.jar` al servidor e instalarlo vía la
-   consola OSGi (telnet al puerto 12612):
+1. Descargar `com.soropeza.sqlquery-<versión>.jar` desde
+   [GitHub Releases](https://github.com/sergioropeza/com.soropeza.sqlquery/releases)
+   (o compilarlo, ver abajo).
+2. Instalarlo desde la consola web de Felix (`https://<servidor>/osgi/system/console/bundles`,
+   *Install/Update...*, marcar *Start Bundle*), o vía la consola OSGi (telnet al
+   puerto 12612):
 
    ```
-   install file:/ruta/com.soropeza.sqlquery_13.0.0.jar
+   install file:/ruta/com.soropeza.sqlquery-13.1.0.jar
    start <bundle-id>
    ```
 
-   o copiarlo a la carpeta `plugins/` con su entrada correspondiente y reiniciar.
 3. Abrir la forma **SQL Query** desde el menú: debe mostrarse la versión mejorada
-   (toolbar con botones e historial).
+   (toolbar con *Ejecutar Consulta*, historial y el editor de código).
+
+Para volver a la forma estándar, detener o desinstalar el bundle. No hace cambios en
+la base de datos, así que no hay nada que revertir.
+
+### Compilar desde el código fuente
+
+Requiere Java 17 y Maven 3.9+. Los bundles del core se resuelven desde el repositorio
+p2 público de iDempiere 13, así que no hace falta tener el código de iDempiere:
+
+```
+mvn verify
+```
+
+El jar queda en `target/`. Para compilar contra otro build de iDempiere o sin conexión:
+`mvn verify -Didempiere.core.repository.url=file:///ruta/a/org.idempiere.p2/target/repository`.
 
 ## Notas
 
-- El historial de queries vive en memoria de la instancia de la forma: se pierde al
-  cerrar la pestaña de la forma o la sesión.
+- El historial se lee de `AD_Issue`, donde la forma registra cada ejecución exitosa
+  (`FORM_SQL_QUERY_LOG_ISSUE=Y`, el default). Cada usuario ve solo sus sentencias. Con el
+  SysConfig en `N`, el historial dura solo mientras la forma está abierta.
 - El copiado al portapapeles usa `navigator.clipboard`, que requiere que iDempiere
   se sirva por HTTPS o desde `localhost` (restricción de los navegadores).
 - Probado en iDempiere 13 (release-13).
@@ -131,3 +152,14 @@ com.soropeza.sqlquery/
 `WSQLQueryEnhanced` deriva de la forma original `WSQLQuery` de Carlos Ruiz
 (globalqss - bxservice); la atribución original se conserva en el header del
 código fuente.
+
+Componentes de terceros incluidos en el jar:
+
+| Componente | Versión | Licencia | Ubicación |
+|---|---|---|---|
+| [CodeMirror](https://codemirror.net/5/) | 5.65.16 | MIT | `src/com/soropeza/webui/apps/form/codemirror/` (con su `LICENSE`) |
+
+## Soporte
+
+Reportar errores y pedidos en los
+[issues de GitHub](https://github.com/sergioropeza/com.soropeza.sqlquery/issues).

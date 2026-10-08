@@ -4,13 +4,16 @@
 
 OSGi plugin for **iDempiere 13** that replaces the standard *SQL Query* form with an
 enhanced version (`WSQLQueryEnhanced`) aimed at technical consultants working with
-complex queries: resizable editor, keyboard shortcuts, statement history, clipboard
-copy and CSV export — without touching the core or the Application Dictionary.
+complex queries: SQL code editor, run the selection, persistent statement history,
+clipboard copy and CSV export — without touching the core or the Application Dictionary.
 
 - **Bundle:** `com.soropeza.sqlquery`
-- **Version:** `13.0.0.qualifier`
+- **Version:** `13.1.0` (see [CHANGELOG](CHANGELOG.md))
+- **Compatibility:** iDempiere 13 (Java 17), PostgreSQL and Oracle
+- **Dependencies:** none besides the iDempiere core
 - **Author:** Sergio Oropeza
-- **License:** [GPL v2](LICENSE.md)
+- **License:** GPL-2.0-or-later ([LICENSE.md](LICENSE.md))
+- **Source code / issues:** https://github.com/sergioropeza/com.soropeza.sqlquery
 
 
 ![SQL Query Enhanced](docs/screenshot.png)
@@ -84,7 +87,7 @@ com.soropeza.sqlquery/
 ├── META-INF/MANIFEST.MF                                  # OSGi manifest (Require-Bundle: base, ui.zk, zk, zul, zcommon)
 ├── OSGI-INF/formfactory.xml                              # DS component publishing the IFormFactory
 ├── build.properties
-├── pom.xml                                               # Tycho packaging (parent org.idempiere.parent)
+├── pom.xml                                               # Standalone Tycho build (iDempiere 13 p2 repository)
 └── src/
     └── com/soropeza/webui/
         ├── apps/form/WSQLQueryEnhanced.java              # The enhanced form
@@ -104,24 +107,41 @@ com.soropeza.sqlquery/
 
 ### Server (production)
 
-1. Export the jar: in Eclipse `Export > Deployable plug-ins and fragments`
-   (or `mvn verify` if the plugin is integrated into a Tycho build).
-2. Copy `com.soropeza.sqlquery_13.0.0.*.jar` to the server and install it through
-   the OSGi console (telnet to port 12612):
+1. Download `com.soropeza.sqlquery-<version>.jar` from the
+   [GitHub Releases](https://github.com/sergioropeza/com.soropeza.sqlquery/releases)
+   page (or build it, see below).
+2. Install it with the Felix web console (`https://<server>/osgi/system/console/bundles`,
+   *Install/Update...*, check *Start Bundle*), or through the OSGi console
+   (telnet to port 12612):
 
    ```
-   install file:/path/com.soropeza.sqlquery_13.0.0.jar
+   install file:/path/com.soropeza.sqlquery-13.1.0.jar
    start <bundle-id>
    ```
 
-   or drop it into the `plugins/` folder with its corresponding entry and restart.
 3. Open the **SQL Query** form from the menu: the enhanced version should appear
-   (toolbar with buttons and history).
+   (toolbar with *Execute Query*, history and the code editor).
+
+To go back to the standard form, stop or uninstall the bundle. No database changes
+are made, so nothing needs to be rolled back.
+
+### Building from source
+
+Requires Java 17 and Maven 3.9+. The iDempiere core bundles are resolved from the
+public iDempiere 13 p2 repository, so no local iDempiere checkout is needed:
+
+```
+mvn verify
+```
+
+The jar is created in `target/`. To build against another iDempiere build or offline:
+`mvn verify -Didempiere.core.repository.url=file:///path/to/org.idempiere.p2/target/repository`.
 
 ## Notes
 
-- The query history lives in the form instance memory: it is lost when the form
-  tab or the session is closed.
+- The query history is read from `AD_Issue`, where the form logs every successful
+  execution (`FORM_SQL_QUERY_LOG_ISSUE=Y`, the default). Each user only sees their own
+  statements. With the SysConfig set to `N`, the history only lasts while the form is open.
 - Clipboard copy uses `navigator.clipboard`, which browsers only allow over HTTPS
   or from `localhost`.
 - Tested on iDempiere 13 (release-13).
@@ -132,3 +152,14 @@ com.soropeza.sqlquery/
 `WSQLQueryEnhanced` is derived from the original `WSQLQuery` form by Carlos Ruiz
 (globalqss - bxservice); the original attribution is preserved in the source
 header.
+
+Third-party components bundled in the jar:
+
+| Component | Version | License | Location |
+|---|---|---|---|
+| [CodeMirror](https://codemirror.net/5/) | 5.65.16 | MIT | `src/com/soropeza/webui/apps/form/codemirror/` (with its `LICENSE`) |
+
+## Support
+
+Report bugs and feature requests in the
+[GitHub issues](https://github.com/sergioropeza/com.soropeza.sqlquery/issues).
