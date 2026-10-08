@@ -88,6 +88,7 @@ com.soropeza.sqlquery/
 ├── OSGI-INF/formfactory.xml                              # DS component publishing the IFormFactory
 ├── build.properties
 ├── pom.xml                                               # Standalone Tycho build (iDempiere 10 p2 repository)
+├── migration/{postgresql,oracle}/ad_issue_formuser_idx.sql  # Optional index for the history (see Installation)
 └── src/
     └── com/soropeza/webui/
         ├── apps/form/WSQLQueryEnhanced.java              # The enhanced form
@@ -122,8 +123,31 @@ com.soropeza.sqlquery/
 3. Open the **SQL Query** form from the menu: the enhanced version should appear
    (toolbar with *Execute Query*, history and the code editor).
 
-To go back to the standard form, stop or uninstall the bundle. No database changes
-are made, so nothing needs to be rolled back.
+To go back to the standard form, stop or uninstall the bundle. The plugin makes no
+database changes by itself, so nothing needs to be rolled back (the optional index below
+can be left in place or dropped).
+
+### History index (recommended)
+
+The statement history is read from `AD_Issue`, filtering by form and user and ordering by
+date. The core only indexes `AD_Issue_UU`, so on databases with many issues that lookup scans
+the whole table every time the form is opened. The `migration/` folder has a script that
+creates the index `ad_issue_formuser_idx` on `AD_Issue (AD_Form_ID, CreatedBy, Created)`:
+
+| Database | Script |
+|---|---|
+| PostgreSQL | `migration/postgresql/ad_issue_formuser_idx.sql` (can be run more than once) |
+| Oracle | `migration/oracle/ad_issue_formuser_idx.sql` (ORA-00955 means it already exists) |
+
+Run it once, as the iDempiere database user (`adempiere`), for example:
+
+```
+psql -h <host> -U adempiere -d idempiere -f migration/postgresql/ad_issue_formuser_idx.sql
+```
+
+It is not required: without the index everything works the same, only slower to open the form
+on large `AD_Issue` tables. The index is not registered in the Application Dictionary, so it
+does not appear in the *Table Index* tab. To remove it: `DROP INDEX ad_issue_formuser_idx;`.
 
 ### Building from source
 
@@ -145,6 +169,7 @@ The jar is created in `target/`. To build against another iDempiere 10 build:
 - The query history is read from `AD_Issue`, where the form logs every successful
   execution (`FORM_SQL_QUERY_LOG_ISSUE=Y`, the default). Each user only sees their own
   statements. With the SysConfig set to `N`, the history only lasts while the form is open.
+  On large `AD_Issue` tables, create the [history index](#history-index-recommended).
 - Clipboard copy uses `navigator.clipboard`, which browsers only allow over HTTPS
   or from `localhost`.
 - Tested on iDempiere 10 (release-10). For iDempiere 13 use the `13.0` branch.

@@ -6,6 +6,11 @@ Versions follow `<iDempiere major>.<feature>.<fix>`.
 
 ## [10.1.0] - 2026-10-08
 
+### Added
+- Optional index `ad_issue_formuser_idx` on `AD_Issue (AD_Form_ID, CreatedBy, Created)` for the
+  statement history lookup: scripts in `migration/postgresql` and `migration/oracle`,
+  documented in the README.
+
 ### Changed
 - Backport of 13.1.0 to iDempiere 10 (Java 11, ZK 9.6). No functional changes.
 - Tycho 2.7.5 (same as the iDempiere 10 core); the build resolves iDempiere 10 from the
