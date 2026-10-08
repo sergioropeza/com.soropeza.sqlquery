@@ -7,8 +7,8 @@
 	<groupId>com.soropeza</groupId>
 	<artifactId>com.soropeza.sqlquery</artifactId>
 	<!-- Must stay in sync with Bundle-Version in META-INF/MANIFEST.MF:
-	     pom "13.1.0-SNAPSHOT" <-> manifest "13.1.0.qualifier" -->
-	<version>13.1.0-SNAPSHOT</version>
+	     pom "12.1.0-SNAPSHOT" <-> manifest "12.1.0.qualifier" -->
+	<version>12.1.0-SNAPSHOT</version>
 	<packaging>eclipse-plugin</packaging>
 	<name>SQL Query Enhanced Form</name>
 	<description>iDempiere plug-in that replaces the SQL Query form with an enhanced version (code editor, history, export).</description>
@@ -29,13 +29,13 @@
 		<!--
 		  p2 repository used to resolve the iDempiere core and ZK bundles this plug-in requires.
 
-		  Defaults to the public iDempiere 13 CI repository, so a plain "mvn verify" works on a
+		  Defaults to the public iDempiere 12 CI repository, so a plain "mvn verify" works on a
 		  bare clone, with no IDE and no local iDempiere checkout.
 
 		  To build against another build, or offline, override it:
 		    mvn verify -Didempiere.core.repository.url=file:///path/to/org.idempiere.p2/target/repository
 		-->
-		<idempiere.core.repository.url>https://jenkins.idempiere.org/job/iDempiere13/ws/org.idempiere.p2/target/repository/</idempiere.core.repository.url>
+		<idempiere.core.repository.url>https://jenkins.idempiere.org/job/iDempiere12/ws/org.idempiere.p2/target/repository/</idempiere.core.repository.url>
 	</properties>
 
 	<repositories>
@@ -95,7 +95,7 @@
 			</plugin>
 
 			<plugin>
-				<!-- Replaces ".qualifier" with a build timestamp, e.g. 13.1.0.202610071530 -->
+				<!-- Replaces ".qualifier" with a build timestamp, e.g. 12.1.0.202610071530 -->
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-packaging-plugin</artifactId>
 				<version>${tycho.version}</version>

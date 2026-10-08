@@ -2,14 +2,14 @@
 
 *Leer en [español](README.es.md).*
 
-OSGi plugin for **iDempiere 13** that replaces the standard *SQL Query* form with an
+OSGi plugin for **iDempiere 12** that replaces the standard *SQL Query* form with an
 enhanced version (`WSQLQueryEnhanced`) aimed at technical consultants working with
 complex queries: SQL code editor, run the selection, persistent statement history,
 clipboard copy and CSV export — without touching the core or the Application Dictionary.
 
 - **Bundle:** `com.soropeza.sqlquery`
-- **Version:** `13.1.0` (see [CHANGELOG](CHANGELOG.md))
-- **Compatibility:** iDempiere 13 (Java 17), PostgreSQL and Oracle
+- **Version:** `12.1.0` (see [CHANGELOG](CHANGELOG.md))
+- **Compatibility:** iDempiere 12 (Java 17), PostgreSQL and Oracle
 - **Dependencies:** none besides the iDempiere core
 - **Author:** Sergio Oropeza
 - **License:** GPL-2.0-or-later ([LICENSE.md](LICENSE.md))
@@ -87,7 +87,7 @@ com.soropeza.sqlquery/
 ├── META-INF/MANIFEST.MF                                  # OSGi manifest (Require-Bundle: base, ui.zk, zk, zul, zcommon)
 ├── OSGI-INF/formfactory.xml                              # DS component publishing the IFormFactory
 ├── build.properties
-├── pom.xml                                               # Standalone Tycho build (iDempiere 13 p2 repository)
+├── pom.xml                                               # Standalone Tycho build (iDempiere 12 p2 repository)
 ├── migration/{postgresql,oracle}/ad_issue_formuser_idx.sql  # Optional index for the history (see Installation)
 └── src/
     └── com/soropeza/webui/
@@ -116,7 +116,7 @@ com.soropeza.sqlquery/
    (telnet to port 12612):
 
    ```
-   install file:/path/com.soropeza.sqlquery-13.1.0.jar
+   install file:/path/com.soropeza.sqlquery-12.1.0.jar
    start <bundle-id>
    ```
 
@@ -152,7 +152,7 @@ does not appear in the *Table Index* tab. To remove it: `DROP INDEX ad_issue_for
 ### Building from source
 
 Requires Java 17 and Maven 3.9+. The iDempiere core bundles are resolved from the
-public iDempiere 13 p2 repository, so no local iDempiere checkout is needed:
+public iDempiere 12 p2 repository, so no local iDempiere checkout is needed:
 
 ```
 mvn verify
@@ -169,7 +169,7 @@ The jar is created in `target/`. To build against another iDempiere build or off
   On large `AD_Issue` tables, create the [history index](#history-index-recommended).
 - Clipboard copy uses `navigator.clipboard`, which browsers only allow over HTTPS
   or from `localhost`.
-- Tested on iDempiere 13 (release-13).
+- Tested on iDempiere 12 (release-12).
 
 ## License
 

@@ -4,6 +4,12 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 Versions follow `<iDempiere major>.<feature>.<fix>`.
 
+## [12.1.0] - 2026-10-08
+
+### Changed
+- Port of 13.1.0 to iDempiere 12 (Java 17, Tycho 4.0.8). No functional changes.
+- The build resolves iDempiere 12 from its public CI p2 repository.
+
 ## [13.1.0] - 2026-10-07
 
 ### Added

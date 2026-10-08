@@ -2,15 +2,15 @@
 
 *Read in [English](README.md).*
 
-Plugin OSGi para **iDempiere 13** que reemplaza la forma estándar *SQL Query* por una
+Plugin OSGi para **iDempiere 12** que reemplaza la forma estándar *SQL Query* por una
 versión mejorada (`WSQLQueryEnhanced`), pensada para el consultor técnico que trabaja
 con queries complejos: editor de código SQL, ejecución de la selección, historial
 persistente, copiado de resultados y exportación a CSV — sin tocar el core ni el
 Diccionario de Aplicación.
 
 - **Bundle:** `com.soropeza.sqlquery`
-- **Versión:** `13.1.0` (ver [CHANGELOG](CHANGELOG.md))
-- **Compatibilidad:** iDempiere 13 (Java 17), PostgreSQL y Oracle
+- **Versión:** `12.1.0` (ver [CHANGELOG](CHANGELOG.md))
+- **Compatibilidad:** iDempiere 12 (Java 17), PostgreSQL y Oracle
 - **Dependencias:** ninguna además del core de iDempiere
 - **Autor:** Sergio Oropeza
 - **Licencia:** GPL-2.0-or-later ([LICENSE.md](LICENSE.md))
@@ -87,7 +87,7 @@ com.soropeza.sqlquery/
 ├── META-INF/MANIFEST.MF                                  # Manifiesto OSGi (Require-Bundle: base, ui.zk, zk, zul, zcommon)
 ├── OSGI-INF/formfactory.xml                              # Componente DS que publica la IFormFactory
 ├── build.properties
-├── pom.xml                                               # Build tycho independiente (repositorio p2 de iDempiere 13)
+├── pom.xml                                               # Build tycho independiente (repositorio p2 de iDempiere 12)
 ├── migration/{postgresql,oracle}/ad_issue_formuser_idx.sql  # Índice opcional para el historial (ver Instalación)
 └── src/
     └── com/soropeza/webui/
@@ -116,7 +116,7 @@ com.soropeza.sqlquery/
    puerto 12612):
 
    ```
-   install file:/ruta/com.soropeza.sqlquery-13.1.0.jar
+   install file:/ruta/com.soropeza.sqlquery-12.1.0.jar
    start <bundle-id>
    ```
 
@@ -153,7 +153,7 @@ así que no aparece en la pestaña *Índice de Tabla*. Para eliminarlo:
 ### Compilar desde el código fuente
 
 Requiere Java 17 y Maven 3.9+. Los bundles del core se resuelven desde el repositorio
-p2 público de iDempiere 13, así que no hace falta tener el código de iDempiere:
+p2 público de iDempiere 12, así que no hace falta tener el código de iDempiere:
 
 ```
 mvn verify
@@ -170,7 +170,7 @@ El jar queda en `target/`. Para compilar contra otro build de iDempiere o sin co
   Con tablas `AD_Issue` grandes, crear el [índice del historial](#índice-del-historial-recomendado).
 - El copiado al portapapeles usa `navigator.clipboard`, que requiere que iDempiere
   se sirva por HTTPS o desde `localhost` (restricción de los navegadores).
-- Probado en iDempiere 13 (release-13).
+- Probado en iDempiere 12 (release-12).
 
 ## Licencia
 
