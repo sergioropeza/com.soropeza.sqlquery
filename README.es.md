@@ -88,6 +88,7 @@ com.soropeza.sqlquery/
 ├── OSGI-INF/formfactory.xml                              # Componente DS que publica la IFormFactory
 ├── build.properties
 ├── pom.xml                                               # Build tycho independiente (repositorio p2 de iDempiere 13)
+├── migration/{postgresql,oracle}/ad_issue_formuser_idx.sql  # Índice opcional para el historial (ver Instalación)
 └── src/
     └── com/soropeza/webui/
         ├── apps/form/WSQLQueryEnhanced.java              # La forma mejorada
@@ -122,8 +123,32 @@ com.soropeza.sqlquery/
 3. Abrir la forma **SQL Query** desde el menú: debe mostrarse la versión mejorada
    (toolbar con *Ejecutar Consulta*, historial y el editor de código).
 
-Para volver a la forma estándar, detener o desinstalar el bundle. No hace cambios en
-la base de datos, así que no hay nada que revertir.
+Para volver a la forma estándar, detener o desinstalar el bundle. El plugin no hace
+cambios en la base de datos por sí solo, así que no hay nada que revertir (el índice
+opcional de abajo se puede dejar o eliminar).
+
+### Índice del historial (recomendado)
+
+El historial de sentencias se lee de `AD_Issue`, filtrando por forma y usuario y ordenando
+por fecha. El core solo indexa `AD_Issue_UU`, así que en bases con muchos issues esa consulta
+recorre toda la tabla cada vez que se abre la forma. En la carpeta `migration/` hay un script
+que crea el índice `ad_issue_formuser_idx` sobre `AD_Issue (AD_Form_ID, CreatedBy, Created)`:
+
+| Base de datos | Script |
+|---|---|
+| PostgreSQL | `migration/postgresql/ad_issue_formuser_idx.sql` (se puede ejecutar más de una vez) |
+| Oracle | `migration/oracle/ad_issue_formuser_idx.sql` (ORA-00955 indica que ya existe) |
+
+Ejecutarlo una sola vez con el usuario de la base de iDempiere (`adempiere`), por ejemplo:
+
+```
+psql -h <host> -U adempiere -d idempiere -f migration/postgresql/ad_issue_formuser_idx.sql
+```
+
+No es obligatorio: sin el índice todo funciona igual, solo que la forma tarda más en abrir
+cuando `AD_Issue` es grande. El índice no queda registrado en el Diccionario de Aplicación,
+así que no aparece en la pestaña *Índice de Tabla*. Para eliminarlo:
+`DROP INDEX ad_issue_formuser_idx;`.
 
 ### Compilar desde el código fuente
 
@@ -142,6 +167,7 @@ El jar queda en `target/`. Para compilar contra otro build de iDempiere o sin co
 - El historial se lee de `AD_Issue`, donde la forma registra cada ejecución exitosa
   (`FORM_SQL_QUERY_LOG_ISSUE=Y`, el default). Cada usuario ve solo sus sentencias. Con el
   SysConfig en `N`, el historial dura solo mientras la forma está abierta.
+  Con tablas `AD_Issue` grandes, crear el [índice del historial](#índice-del-historial-recomendado).
 - El copiado al portapapeles usa `navigator.clipboard`, que requiere que iDempiere
   se sirva por HTTPS o desde `localhost` (restricción de los navegadores).
 - Probado en iDempiere 13 (release-13).

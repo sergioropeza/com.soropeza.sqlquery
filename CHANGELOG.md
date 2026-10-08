@@ -15,6 +15,9 @@ Versions follow `<iDempiere major>.<feature>.<fix>`.
 - Statement history persisted across sessions (read from `AD_Issue`), with time and row count.
 - `NULL` values shown in grey italics; numeric columns without decimals shown as integers.
 - "Execute Query" label on the execute button and a "?" button with the keyboard shortcuts.
+- Optional index `ad_issue_formuser_idx` on `AD_Issue (AD_Form_ID, CreatedBy, Created)` for the
+  statement history lookup: scripts in `migration/postgresql` and `migration/oracle`,
+  documented in the README.
 
 ### Changed
 - Result count and duration shown in the toolbar; the error region only appears on errors.
