@@ -125,28 +125,32 @@ public interface I_SOP_SQLQueryHistory
     /** Column name SOP_NoOfRecords */
     public static final String COLUMNNAME_SOP_NoOfRecords = "SOP_NoOfRecords";
 
-	/** Set No. of Records	  */
+	/** Set No. of Records.
+	  * Number of records returned or affected by the statement
+	  */
 	public void setSOP_NoOfRecords (int SOP_NoOfRecords);
 
-	/** Get No. of Records	  */
+	/** Get No. of Records.
+	  * Number of records returned or affected by the statement
+	  */
 	public int getSOP_NoOfRecords();
 
     /** Column name SOP_SQLQueryHistory_ID */
     public static final String COLUMNNAME_SOP_SQLQueryHistory_ID = "SOP_SQLQueryHistory_ID";
 
-	/** Set SQL Query History 	  */
+	/** Set SQL Query History	  */
 	public void setSOP_SQLQueryHistory_ID (int SOP_SQLQueryHistory_ID);
 
-	/** Get SQL Query History 	  */
+	/** Get SQL Query History	  */
 	public int getSOP_SQLQueryHistory_ID();
 
     /** Column name SOP_SQLQueryHistory_UU */
     public static final String COLUMNNAME_SOP_SQLQueryHistory_UU = "SOP_SQLQueryHistory_UU";
 
-	/** Set SOP_SQLQueryHistory_UU	  */
+	/** Set SQL Query History UU	  */
 	public void setSOP_SQLQueryHistory_UU (String SOP_SQLQueryHistory_UU);
 
-	/** Get SOP_SQLQueryHistory_UU	  */
+	/** Get SQL Query History UU	  */
 	public String getSOP_SQLQueryHistory_UU();
 
     /** Column name SQLStatement */
