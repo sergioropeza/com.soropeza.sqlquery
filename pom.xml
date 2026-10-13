@@ -7,8 +7,8 @@
 	<groupId>com.soropeza</groupId>
 	<artifactId>com.soropeza.sqlquery</artifactId>
 	<!-- Must stay in sync with Bundle-Version in META-INF/MANIFEST.MF:
-	     pom "10.1.0-SNAPSHOT" <-> manifest "10.1.0.qualifier" -->
-	<version>10.1.0-SNAPSHOT</version>
+	     pom "10.2.0-SNAPSHOT" <-> manifest "10.2.0.qualifier" -->
+	<version>10.2.0-SNAPSHOT</version>
 	<packaging>eclipse-plugin</packaging>
 	<name>SQL Query Enhanced Form</name>
 	<description>iDempiere plug-in that replaces the SQL Query form with an enhanced version (code editor, history, export).</description>

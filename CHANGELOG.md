@@ -4,6 +4,21 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 Versions follow `<iDempiere major>.<feature>.<fix>`.
 
+## [10.2.0] - Unreleased
+
+### Changed
+- The statement history is stored in its own table `SOP_SQLQueryHistory` (user, statement,
+  records, elapsed time) instead of being read from `AD_Issue`, which is usually cleaned or
+  truncated in maintenance tasks. The table is created by the 2Pack `META-INF/2Pack_1.0.0.zip`,
+  installed by `Incremental2PackActivator`; the model class is registered by `SOP_ModelFactory`.
+  Statements are still logged in `AD_Issue` (SysConfig `FORM_SQL_QUERY_LOG_ISSUE`).
+- The history logged in `AD_Issue` by 10.1.0 is not imported.
+- Same 2Pack as 13.2.0, except `SOP_SQLQueryHistory_UU` uses the String reference, since the
+  UUID reference does not exist in iDempiere 10.
+
+### Removed
+- Optional index script `ad_issue_formuser_idx` (`migration/`), no longer needed.
+
 ## [10.1.0] - 2026-10-08
 
 ### Added

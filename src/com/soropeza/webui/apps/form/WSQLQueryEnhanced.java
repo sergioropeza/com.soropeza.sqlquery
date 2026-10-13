@@ -45,7 +45,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.adempiere.exceptions.DBException;
@@ -88,6 +87,8 @@ import org.zkoss.zul.Separator;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Vlayout;
 
+import com.soropeza.webui.apps.model.X_SOP_SQLQueryHistory;
+
 /**
  * A Custom Form to process SQL queries.
  *
@@ -116,7 +117,7 @@ public class WSQLQueryEnhanced extends ADForm implements EventListener<Event>
 	private static final String EVENT_DATA_SELECTION = "sel";
 	/** Maximum number of statements kept in the history. */
 	private static final int MAX_HISTORY = 50;
-	/** Issue summary used to log executed statements, also used to reload the history. */
+	/** Issue summary used to log executed statements. */
 	private static final String ISSUE_SUMMARY = "SQL executed on SQL Query form";
 	/** SysConfig to use the CodeMirror code editor (Y) or the plain textarea (N). */
 	private static final String SYSCONFIG_CODE_EDITOR = "SQLQUERY_ENHANCED_CODE_EDITOR";
@@ -198,11 +199,6 @@ public class WSQLQueryEnhanced extends ADForm implements EventListener<Event>
 	 * Remove trailing semicolons
 	 */
 	private static final String REGEX_REMOVE_TRAILING_SEMICOLONS = "[;\\s]+$";
-
-	/**
-	 * Row count in the result text logged in the issue
-	 */
-	private static final Pattern PATTERN_COUNT = Pattern.compile("Count = (\\d+)");
 
 	/**
 	 * Default constructor.
@@ -584,6 +580,7 @@ public class WSQLQueryEnhanced extends ADForm implements EventListener<Event>
 				issue.setComments("Duration : " + durationSeconds + " seconds");
 				issue.saveEx();
 			}
+			saveHistory(sql.trim(), count, end - start);
 
 			// Show the result in WListbox
 			WListItemRenderer renderer = new ResultRenderer(header);
@@ -681,42 +678,44 @@ public class WSQLQueryEnhanced extends ADForm implements EventListener<Event>
 	}
 
 	/**
-	 * Load the statements previously executed by the user from the issues logged by this form.
+	 * Save an executed statement in the history table of the user.
+	 * A failure is only logged, the statement result is still shown.
+	 * @param sql executed statement
+	 * @param rows number of records
+	 * @param elapsedMS execution time in milliseconds
+	 */
+	private void saveHistory(String sql, int rows, long elapsedMS) {
+		try {
+			X_SOP_SQLQueryHistory history = new X_SOP_SQLQueryHistory(Env.getCtx(), 0, null);
+			history.setAD_User_ID(Env.getAD_User_ID(Env.getCtx()));
+			history.setSQLStatement(sql);
+			history.setSOP_NoOfRecords(rows);
+			history.setElapsedTimeMS(BigDecimal.valueOf(elapsedMS));
+			history.saveEx();
+		} catch (Exception e) {
+			log.log(Level.WARNING, "Can't save history", e);
+		}
+	}
+
+	/**
+	 * Load the statements previously executed by the user from the history table.
 	 */
 	private void loadHistory() {
-		if (!MSysConfig.getBooleanValue(MSysConfig.FORM_SQL_QUERY_LOG_ISSUE, true))
-			return;
-		String sql = "SELECT StackTrace, Created, ResponseText FROM AD_Issue"
-				+ " WHERE AD_Form_ID=? AND CreatedBy=? AND IssueSummary=?"
+		String sql = "SELECT SQLStatement, Created, SOP_NoOfRecords FROM SOP_SQLQueryHistory"
+				+ " WHERE AD_User_ID=? AND IsActive='Y'"
 				+ " ORDER BY Created DESC";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {
 			pstmt = DB.prepareStatement(sql, null);
-			pstmt.setInt(1, getAdFormId());
-			pstmt.setInt(2, Env.getAD_User_ID(Env.getCtx()));
-			pstmt.setString(3, ISSUE_SUMMARY);
+			pstmt.setInt(1, Env.getAD_User_ID(Env.getCtx()));
 			pstmt.setMaxRows(MAX_HISTORY * 4);	// repeated statements are merged
 			rs = pstmt.executeQuery();
 			while (rs.next() && m_history.size() < MAX_HISTORY) {
-				String statement = rs.getString(1);
-				if (statement == null || statement.trim().length() == 0)
-					continue;
-				statement = statement.trim();
-				boolean isRepeated = false;
-				for (HistoryEntry entry : m_history) {
-					if (entry.sql.equals(statement)) {
-						isRepeated = true;
-						break;
-					}
-				}
-				if (isRepeated)
-					continue;
-				int rows = -1;
-				Matcher matcher = PATTERN_COUNT.matcher(rs.getString(3) != null ? rs.getString(3) : "");
-				if (matcher.find())
-					rows = Integer.parseInt(matcher.group(1));
-				m_history.add(new HistoryEntry(statement, rs.getTimestamp(2), rows));
+				int rows = rs.getInt(3);
+				if (rs.wasNull())
+					rows = -1;
+				addHistoryEntry(rs.getString(1), rs.getTimestamp(2), rows);
 			}
 		} catch (Exception e) {
 			log.log(Level.WARNING, "Can't load history", e);
@@ -724,6 +723,23 @@ public class WSQLQueryEnhanced extends ADForm implements EventListener<Event>
 			DB.close(rs, pstmt);
 		}
 		refreshHistoryCombo();
+	}
+
+	/**
+	 * Append a statement read from the database to {@link #m_history}, ignoring empty and repeated statements.
+	 * @param statement
+	 * @param executed
+	 * @param rows number of records, -1 if unknown
+	 */
+	private void addHistoryEntry(String statement, Timestamp executed, int rows) {
+		if (statement == null || statement.trim().length() == 0)
+			return;
+		String sql = statement.trim();
+		for (HistoryEntry entry : m_history) {
+			if (entry.sql.equals(sql))
+				return;
+		}
+		m_history.add(new HistoryEntry(sql, executed, rows));
 	}
 
 	/**

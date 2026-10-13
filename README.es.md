@@ -21,7 +21,7 @@ ranking devuelve la forma mejorada al abrir *SQL Query*. Deteniendo el bundle vu
   5.65.16, empaquetado, sin CDN). Se desactiva con el SysConfig `SQLQUERY_ENHANCED_CODE_EDITOR=N`.
 - Ejecutar con Ctrl+Enter; con texto seleccionado se ejecuta solo la selección.
 - Tab / Shift+Tab para indentar y desindentar.
-- Historial de sentencias (últimas 50 por usuario) persistente entre sesiones, leído de `AD_Issue`.
+- Historial de sentencias (últimas 50 por usuario) persistente entre sesiones en su propia tabla `SOP_SQLQueryHistory`.
 - Valores `NULL` en gris itálica; cantidad de registros y duración en la barra.
 - Copiar los resultados (o una fila, con doble clic) al portapapeles y exportar a CSV (UTF-8).
 
@@ -46,17 +46,14 @@ público, así que `mvn verify` resuelve el core desde un build local de iDempie
 Otra ubicación: `-Didempiere.core.repository.url=file:///ruta/a/org.idempiere.p2/target/repository`.
 El jar queda en `target/`.
 
-## Índice del historial (recomendado)
+## Historial de sentencias
 
-El historial filtra `AD_Issue` por forma y usuario, y el core no indexa esas columnas. En tablas
-`AD_Issue` grandes, crear una vez el índice opcional `ad_issue_formuser_idx` con el usuario
-`adempiere`:
+Cada sentencia ejecutada con éxito se guarda en la tabla `SOP_SQLQueryHistory` (usuario, sentencia,
+registros y tiempo), que crea el 2Pack del plugin al instalarlo. Las sentencias se siguen registrando
+en `AD_Issue` como en la forma del core (SysConfig `FORM_SQL_QUERY_LOG_ISSUE`), pero el historial ya
+no depende de eso, así que limpiar `AD_Issue` no lo borra.
 
-```
-psql -h <host> -U adempiere -d idempiere -f migration/postgresql/ad_issue_formuser_idx.sql
-```
-
-Para Oracle usar `migration/oracle/ad_issue_formuser_idx.sql`. Se elimina con
+Si se creó el índice opcional `ad_issue_formuser_idx` de la versión 10.1.0, ya no hace falta:
 `DROP INDEX ad_issue_formuser_idx;`.
 
 ## Licencia
