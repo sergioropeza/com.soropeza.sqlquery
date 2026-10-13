@@ -4,7 +4,7 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 Versions follow `<iDempiere major>.<feature>.<fix>`.
 
-## [13.2.0] - Unreleased
+## [13.2.0] - 2026-10-13
 
 ### Changed
 - The statement history is stored in its own table `SOP_SQLQueryHistory` (user, statement,
