@@ -62,32 +62,6 @@ public class X_SOP_SQLQueryHistory extends PO implements I_SOP_SQLQueryHistory, 
         } */
     }
 
-    /** Standard Constructor */
-    public X_SOP_SQLQueryHistory (Properties ctx, String SOP_SQLQueryHistory_UU, String trxName)
-    {
-      super (ctx, SOP_SQLQueryHistory_UU, trxName);
-      /** if (SOP_SQLQueryHistory_UU == null)
-        {
-			setAD_User_ID (0);
-// @#AD_User_ID@
-			setSOP_SQLQueryHistory_ID (0);
-			setSQLStatement (null);
-        } */
-    }
-
-    /** Standard Constructor */
-    public X_SOP_SQLQueryHistory (Properties ctx, String SOP_SQLQueryHistory_UU, String trxName, String ... virtualColumns)
-    {
-      super (ctx, SOP_SQLQueryHistory_UU, trxName, virtualColumns);
-      /** if (SOP_SQLQueryHistory_UU == null)
-        {
-			setAD_User_ID (0);
-// @#AD_User_ID@
-			setSOP_SQLQueryHistory_ID (0);
-			setSQLStatement (null);
-        } */
-    }
-
     /** Load Constructor */
     public X_SOP_SQLQueryHistory (Properties ctx, ResultSet rs, String trxName)
     {
