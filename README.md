@@ -22,7 +22,7 @@ the bundle restores the standard form.
   bundled, no CDN). Can be disabled with SysConfig `SQLQUERY_ENHANCED_CODE_EDITOR=N`.
 - Run with Ctrl+Enter; with text selected, only the selection runs.
 - Tab / Shift+Tab indent and unindent.
-- Statement history (last 50 per user) persisted across sessions, read from `AD_Issue`.
+- Statement history (last 50 per user) persisted across sessions in its own table `SOP_SQLQueryHistory`.
 - `NULL` values shown in grey italics; record count and duration in the toolbar.
 - Copy the results (or one row, with double-click) to the clipboard and export to CSV (UTF-8).
 
@@ -44,17 +44,14 @@ Run Configuration and start the server.
 **Build:** with Java 17 and Maven 3.9+, `mvn verify` (resolves iDempiere 13 from its public p2
 repository; the jar is created in `target/`).
 
-## History index (recommended)
+## Statement history
 
-The history lookup filters `AD_Issue` by form and user, and the core does not index those
-columns. On large `AD_Issue` tables, create the optional index `ad_issue_formuser_idx` once, as
-the `adempiere` user:
+Each successfully executed statement is saved in the table `SOP_SQLQueryHistory` (user, statement,
+records and elapsed time), created by the plug-in's 2Pack when it is installed. Statements are still
+logged in `AD_Issue` like the core form does (SysConfig `FORM_SQL_QUERY_LOG_ISSUE`), but the history
+no longer depends on it, so cleaning `AD_Issue` does not lose it.
 
-```
-psql -h <host> -U adempiere -d idempiere -f migration/postgresql/ad_issue_formuser_idx.sql
-```
-
-For Oracle use `migration/oracle/ad_issue_formuser_idx.sql`. It can be dropped with
+If the optional index `ad_issue_formuser_idx` of version 13.1.0 was created, it is no longer needed:
 `DROP INDEX ad_issue_formuser_idx;`.
 
 ## License
