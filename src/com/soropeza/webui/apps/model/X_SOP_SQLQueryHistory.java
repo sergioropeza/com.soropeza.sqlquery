@@ -173,7 +173,7 @@ public class X_SOP_SQLQueryHistory extends PO implements I_SOP_SQLQueryHistory, 
 	}
 
 	/** Set No. of Records.
-		@param SOP_NoOfRecords No. of Records
+		@param SOP_NoOfRecords Number of records returned or affected by the statement
 	*/
 	public void setSOP_NoOfRecords (int SOP_NoOfRecords)
 	{
@@ -181,7 +181,8 @@ public class X_SOP_SQLQueryHistory extends PO implements I_SOP_SQLQueryHistory, 
 	}
 
 	/** Get No. of Records.
-		@return No. of Records	  */
+		@return Number of records returned or affected by the statement
+	  */
 	public int getSOP_NoOfRecords()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SOP_NoOfRecords);
@@ -190,8 +191,8 @@ public class X_SOP_SQLQueryHistory extends PO implements I_SOP_SQLQueryHistory, 
 		return ii.intValue();
 	}
 
-	/** Set SQL Query History .
-		@param SOP_SQLQueryHistory_ID SQL Query History 
+	/** Set SQL Query History.
+		@param SOP_SQLQueryHistory_ID SQL Query History
 	*/
 	public void setSOP_SQLQueryHistory_ID (int SOP_SQLQueryHistory_ID)
 	{
@@ -201,8 +202,8 @@ public class X_SOP_SQLQueryHistory extends PO implements I_SOP_SQLQueryHistory, 
 			set_ValueNoCheck (COLUMNNAME_SOP_SQLQueryHistory_ID, Integer.valueOf(SOP_SQLQueryHistory_ID));
 	}
 
-	/** Get SQL Query History .
-		@return SQL Query History 	  */
+	/** Get SQL Query History.
+		@return SQL Query History	  */
 	public int getSOP_SQLQueryHistory_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SOP_SQLQueryHistory_ID);
@@ -211,16 +212,16 @@ public class X_SOP_SQLQueryHistory extends PO implements I_SOP_SQLQueryHistory, 
 		return ii.intValue();
 	}
 
-	/** Set SOP_SQLQueryHistory_UU.
-		@param SOP_SQLQueryHistory_UU SOP_SQLQueryHistory_UU
+	/** Set SQL Query History UU.
+		@param SOP_SQLQueryHistory_UU SQL Query History UU
 	*/
 	public void setSOP_SQLQueryHistory_UU (String SOP_SQLQueryHistory_UU)
 	{
 		set_Value (COLUMNNAME_SOP_SQLQueryHistory_UU, SOP_SQLQueryHistory_UU);
 	}
 
-	/** Get SOP_SQLQueryHistory_UU.
-		@return SOP_SQLQueryHistory_UU	  */
+	/** Get SQL Query History UU.
+		@return SQL Query History UU	  */
 	public String getSOP_SQLQueryHistory_UU()
 	{
 		return (String)get_Value(COLUMNNAME_SOP_SQLQueryHistory_UU);
